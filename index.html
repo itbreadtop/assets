@@ -1,9 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Breadtop Machine Asset</title>
+
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -11,27 +12,55 @@
       background: #f5f5f5;
       color: #222;
     }
+
     .card {
-      max-width: 520px;
+      max-width: 560px;
       margin: auto;
-      background: #fff;
+      background: #ffffff;
       padding: 24px;
       border-radius: 14px;
       box-shadow: 0 2px 10px rgba(0,0,0,0.12);
     }
+
+    .brand {
+      font-size: 14px;
+      font-weight: bold;
+      color: #e87511;
+      margin-bottom: 8px;
+      text-transform: lowercase;
+    }
+
     h1 {
       margin-top: 0;
       font-size: 24px;
     }
+
     .asset-id {
-      font-size: 34px;
+      font-size: 36px;
       font-weight: bold;
       margin: 16px 0;
+      padding: 12px;
+      background: #111;
+      color: white;
+      text-align: center;
+      border-radius: 10px;
     }
+
     .info {
       font-size: 16px;
-      line-height: 1.7;
+      line-height: 1.8;
+      margin-top: 18px;
     }
+
+    .status {
+      margin-top: 18px;
+      padding: 12px;
+      background: #fff3cd;
+      border: 1px solid #ffe08a;
+      border-radius: 10px;
+      font-size: 14px;
+    }
+
     .button {
       display: block;
       margin-top: 14px;
@@ -43,22 +72,48 @@
       border-radius: 10px;
       font-weight: bold;
     }
+
     .disabled {
       background: #777;
     }
+
+    .footer {
+      margin-top: 20px;
+      font-size: 12px;
+      color: #666;
+      text-align: center;
+    }
+
+    .not-found {
+      background: #f8d7da;
+      border-color: #f5c2c7;
+      color: #842029;
+    }
   </style>
 </head>
+
 <body>
   <div class="card">
-    <h1>Breadtop Machine Asset</h1>
+    <div class="brand">breadtop machine asset</div>
+
+    <h1>Machine Asset Record</h1>
 
     <div class="asset-id" id="assetId">Loading...</div>
 
     <div class="info">
-      <strong>Machine Name:</strong> HMI Filling Machine ABT1000L<br>
-      <strong>Chinese Name:</strong> 入餡機<br>
-      <strong>Location:</strong> U3<br>
-      <strong>Department:</strong> CAKE / 蛋糕部
+      <strong>Machine Name:</strong> <span id="machineName">-</span><br>
+      <strong>Chinese Name:</strong> <span id="chineseName">-</span><br>
+      <strong>Display Name:</strong> <span id="displayName">-</span><br>
+      <strong>Category Code:</strong> <span id="categoryCode">-</span><br>
+      <strong>Unit Code:</strong> <span id="unitCode">-</span><br>
+      <strong>Area Code:</strong> <span id="areaCode">-</span><br>
+      <strong>Running No.:</strong> <span id="runningNo">-</span><br>
+      <strong>Location:</strong> <span id="location">-</span><br>
+      <strong>Area:</strong> <span id="areaName">-</span>
+    </div>
+
+    <div class="status" id="statusBox">
+      This asset page is prepared for future stock take, operation menu, and maintenance record.
     </div>
 
     <a class="button disabled" href="#" onclick="alert('Operation menu is under preparation.'); return false;">
@@ -72,12 +127,350 @@
     <a class="button disabled" href="#" onclick="alert('Maintenance record is under preparation.'); return false;">
       Maintenance Record
     </a>
+
+    <div class="footer">
+      Breadtop Asset Management
+    </div>
   </div>
 
   <script>
+    const assets = {
+      "M05-002": {
+        machineName: "Irinox Chiller Freezer HC202",
+        chineseName: "冷凍櫃",
+        displayName: "Irinox 冷凍櫃 HC202",
+        categoryCode: "A",
+        unitCode: "03",
+        areaCode: "01",
+        runningNo: "035",
+        location: "U3",
+        areaName: "Cake / 蛋糕"
+      },
+      "M05-003": {
+        machineName: "Air Shower Room",
+        chineseName: "風淋室",
+        displayName: "風淋室",
+        categoryCode: "A",
+        unitCode: "03",
+        areaCode: "01",
+        runningNo: "036",
+        location: "U3",
+        areaName: "Cake / 蛋糕"
+      },
+      "M07-001": {
+        machineName: "Gau Grower Stuffing Machine CP510",
+        chineseName: "入餡機",
+        displayName: "Gau Grower 入餡機 CP510",
+        categoryCode: "A",
+        unitCode: "03",
+        areaCode: "01",
+        runningNo: "039",
+        location: "U3",
+        areaName: "Cake / 蛋糕"
+      },
+      "M17-006": {
+        machineName: "Japan System JSP-2 Coating Machine",
+        chineseName: "塗層機",
+        displayName: "Japan System JSP-2 塗層機",
+        categoryCode: "A",
+        unitCode: "03",
+        areaCode: "01",
+        runningNo: "062",
+        location: "U3",
+        areaName: "Cake / 蛋糕"
+      },
+      "M17-009": {
+        machineName: "Valmar Chef Cream 60",
+        chineseName: "雪糕機",
+        displayName: "Valmar Chef Cream 60 雪糕機",
+        categoryCode: "A",
+        unitCode: "03",
+        areaCode: "01",
+        runningNo: "064",
+        location: "U3",
+        areaName: "Cake / 蛋糕"
+      },
+      "M18-009": {
+        machineName: "Boyens Jelly Spraying Machine",
+        chineseName: "果凍噴塗機",
+        displayName: "Boyens 果凍噴塗機",
+        categoryCode: "A",
+        unitCode: "03",
+        areaCode: "01",
+        runningNo: "070",
+        location: "U3",
+        areaName: "Cake / 蛋糕"
+      },
+      "M18-015": {
+        machineName: "KOMA VHD-10 Freezer Cabinet",
+        chineseName: "急凍櫃",
+        displayName: "KOMA VHD-10 急凍櫃",
+        categoryCode: "A",
+        unitCode: "03",
+        areaCode: "01",
+        runningNo: "073",
+        location: "U3",
+        areaName: "Cake / 蛋糕"
+      },
+      "M19-007": {
+        machineName: "OVO-TECH Egg Breaker Rz-1",
+        chineseName: "打蛋機",
+        displayName: "OVO-TECH 打蛋機",
+        categoryCode: "A",
+        unitCode: "03",
+        areaCode: "01",
+        runningNo: "076",
+        location: "U3",
+        areaName: "Cake / 蛋糕"
+      },
+      "M19-011": {
+        machineName: "KOMA HN-4C Storage Freezer",
+        chineseName: "儲存急凍櫃",
+        displayName: "KOMA HN-4C 儲存急凍櫃",
+        categoryCode: "A",
+        unitCode: "03",
+        areaCode: "01",
+        runningNo: "078",
+        location: "U3",
+        areaName: "Cake / 蛋糕"
+      },
+      "M19-012": {
+        machineName: "Trueheat 6-Burner Stove",
+        chineseName: "6頭煮食爐",
+        displayName: "Trueheat 6頭煮食爐",
+        categoryCode: "A",
+        unitCode: "03",
+        areaCode: "01",
+        runningNo: "079",
+        location: "U3",
+        areaName: "Cake / 蛋糕"
+      },
+      "M20-009": {
+        machineName: "20L Mixer",
+        chineseName: "20L 攪拌機",
+        displayName: "20L 攪拌機",
+        categoryCode: "A",
+        unitCode: "03",
+        areaCode: "01",
+        runningNo: "088",
+        location: "U3",
+        areaName: "Cake / 蛋糕"
+      },
+      "M20-010": {
+        machineName: "CFI Blast Chiller",
+        chineseName: "急凍櫃",
+        displayName: "CFI 急凍櫃",
+        categoryCode: "A",
+        unitCode: "03",
+        areaCode: "01",
+        runningNo: "089",
+        location: "U3",
+        areaName: "Cake / 蛋糕"
+      },
+      "M20-011": {
+        machineName: "20L Mixer",
+        chineseName: "20L 攪拌機",
+        displayName: "20L 攪拌機",
+        categoryCode: "A",
+        unitCode: "03",
+        areaCode: "01",
+        runningNo: "090",
+        location: "U3",
+        areaName: "Cake / 蛋糕"
+      },
+      "M20-013": {
+        machineName: "Ultracut Filou Cutting Machine",
+        chineseName: "超聲波切割機",
+        displayName: "Ultracut Filou 超聲波切割機",
+        categoryCode: "A",
+        unitCode: "03",
+        areaCode: "01",
+        runningNo: "091",
+        location: "U3",
+        areaName: "Cake / 蛋糕"
+      },
+      "M20-017": {
+        machineName: "HMI-698 Filling Machine",
+        chineseName: "入餡機",
+        displayName: "HMI-698 入餡機",
+        categoryCode: "A",
+        unitCode: "03",
+        areaCode: "01",
+        runningNo: "093",
+        location: "U3",
+        areaName: "Cake / 蛋糕"
+      },
+      "M20-018": {
+        machineName: "Robot Coupe CL50 Vegetable Cutter",
+        chineseName: "切菜機",
+        displayName: "Robot Coupe CL50 切菜機",
+        categoryCode: "A",
+        unitCode: "03",
+        areaCode: "01",
+        runningNo: "094",
+        location: "U3",
+        areaName: "Cake / 蛋糕"
+      },
+      "M21-002": {
+        machineName: "KOMA K-Control Blast Chiller",
+        chineseName: "急凍櫃",
+        displayName: "KOMA K-Control 急凍櫃",
+        categoryCode: "A",
+        unitCode: "03",
+        areaCode: "01",
+        runningNo: "099",
+        location: "U3",
+        areaName: "Cake / 蛋糕"
+      },
+      "M21-012": {
+        machineName: "Robot Coupe MP550 Power Mixer",
+        chineseName: "攪拌棒",
+        displayName: "Robot Coupe MP550 攪拌棒",
+        categoryCode: "A",
+        unitCode: "03",
+        areaCode: "01",
+        runningNo: "104",
+        location: "U3",
+        areaName: "Cake / 蛋糕"
+      },
+      "M21-013": {
+        machineName: "CM25G Four Door Bar Fridge",
+        chineseName: "四門玻璃雪櫃",
+        displayName: "CM25G 四門玻璃雪櫃",
+        categoryCode: "A",
+        unitCode: "03",
+        areaCode: "01",
+        runningNo: "106",
+        location: "U3",
+        areaName: "Cake / 蛋糕"
+      },
+      "M21-024": {
+        machineName: "Japan System Coating Machine JSP-2F",
+        chineseName: "塗層機",
+        displayName: "Japan System JSP-2F 塗層機",
+        categoryCode: "A",
+        unitCode: "03",
+        areaCode: "01",
+        runningNo: "107",
+        location: "U3",
+        areaName: "Cake / 蛋糕"
+      },
+      "M21-025": {
+        machineName: "Valmar Smarty 12TTi Ice Cream Freezer",
+        chineseName: "雪糕機",
+        displayName: "Valmar Smarty 12TTi 雪糕機",
+        categoryCode: "A",
+        unitCode: "03",
+        areaCode: "01",
+        runningNo: "108",
+        location: "U3",
+        areaName: "Cake / 蛋糕"
+      },
+      "M21-028": {
+        machineName: "Valmar Dosy 3 Filling Machine",
+        chineseName: "入餡機",
+        displayName: "Valmar Dosy 3 入餡機",
+        categoryCode: "A",
+        unitCode: "03",
+        areaCode: "01",
+        runningNo: "109",
+        location: "U3",
+        areaName: "Cake / 蛋糕"
+      },
+      "M23-001": {
+        machineName: "Robot Coupe MP550 Stick Blender",
+        chineseName: "攪拌棒",
+        displayName: "Robot Coupe MP550 攪拌棒",
+        categoryCode: "A",
+        unitCode: "03",
+        areaCode: "01",
+        runningNo: "113",
+        location: "U3",
+        areaName: "Cake / 蛋糕"
+      },
+      "M23-002": {
+        machineName: "Japan System Filling Machine",
+        chineseName: "入餡機",
+        displayName: "Japan System 入餡機",
+        categoryCode: "A",
+        unitCode: "03",
+        areaCode: "01",
+        runningNo: "114",
+        location: "U3",
+        areaName: "Cake / 蛋糕"
+      },
+      "M23-005": {
+        machineName: "Bravo Mixcream 56H",
+        chineseName: "攪拌機",
+        displayName: "Bravo Mixcream 56H 攪拌機",
+        categoryCode: "A",
+        unitCode: "03",
+        areaCode: "01",
+        runningNo: "117",
+        location: "U3",
+        areaName: "Cake / 蛋糕"
+      },
+      "M17-054": {
+        machineName: "Gas Burner",
+        chineseName: "煮食爐",
+        displayName: "煮食爐",
+        categoryCode: "A",
+        unitCode: "03",
+        areaCode: "01",
+        runningNo: "134",
+        location: "U3",
+        areaName: "Cake / 蛋糕"
+      },
+      "M19-057": {
+        machineName: "Breville Kitchen Wizz 8",
+        chineseName: "食物處理機",
+        displayName: "Breville Kitchen Wizz 8 食物處理機",
+        categoryCode: "A",
+        unitCode: "03",
+        areaCode: "01",
+        runningNo: "138",
+        location: "U3",
+        areaName: "Cake / 蛋糕"
+      },
+      "M19-074": {
+        machineName: "Toughmix B7B 7L Mixer",
+        chineseName: "7L 攪拌機",
+        displayName: "Toughmix B7B 7L 攪拌機",
+        categoryCode: "A",
+        unitCode: "03",
+        areaCode: "01",
+        runningNo: "140",
+        location: "U3",
+        areaName: "Cake / 蛋糕"
+      }
+    };
+
     const params = new URLSearchParams(window.location.search);
-    const id = params.get("id") || "M25-004";
-    document.getElementById("assetId").textContent = id;
+    const id = params.get("id") || "";
+
+    const asset = assets[id];
+
+    document.getElementById("assetId").textContent = id || "No Asset ID";
+
+    if (asset) {
+      document.getElementById("machineName").textContent = asset.machineName;
+      document.getElementById("chineseName").textContent = asset.chineseName;
+      document.getElementById("displayName").textContent = asset.displayName;
+      document.getElementById("categoryCode").textContent = asset.categoryCode;
+      document.getElementById("unitCode").textContent = asset.unitCode;
+      document.getElementById("areaCode").textContent = asset.areaCode;
+      document.getElementById("runningNo").textContent = asset.runningNo;
+      document.getElementById("location").textContent = asset.location;
+      document.getElementById("areaName").textContent = asset.areaName;
+
+      document.getElementById("statusBox").textContent =
+        "This asset page is prepared for future stock take, operation menu, and maintenance record.";
+    } else {
+      document.getElementById("machineName").textContent = "Asset record not found";
+      document.getElementById("statusBox").classList.add("not-found");
+      document.getElementById("statusBox").textContent =
+        "This asset ID is not included in the current HTML asset list. Please check the QR code URL or update index.html.";
+    }
   </script>
 </body>
 </html>
